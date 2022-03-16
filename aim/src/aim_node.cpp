@@ -17,10 +17,10 @@ vector<Vec4i>hierarchy;
 Point2f points[4];
 std_msgs::Int8 fps_msg;
 vector<pair <Point,Point> >led;
-//Point3d small[]={Point3d(-0.0675,0.03,0),Point3d(0.0675,0.03,0),Point3d(0.0675,-0.03,0),Point3d(-0.0675,-0.03,0)};
-//Point2d armor_points[4];
+vector<Point3d> small={Point3d(-0.0675,0.03,0),Point3d(0.0675,0.03,0),Point3d(0.0675,-0.03,0),Point3d(-0.0675,-0.03,0)};
+vector<Point2d> armor_points;
 Mat cameraMatrix,distCoeffs;
-//Mat tecv,recv;
+Mat tvec,rvec;
 class aim{
     ros::NodeHandle nh_;
     image_transport::ImageTransport it_;
@@ -50,8 +50,8 @@ public:
         absdiff(channels[0],channels[1],gray_img);
         find_led();
         find_armor();
-        imshow("img",img_src);
-        waitKey(1);
+        //imshow("img",img_src);
+        //waitKey(1);
         fps_msg.data=1;
         fps_pub.publish(fps_msg);
     }
@@ -79,17 +79,17 @@ public:
             Point st=Point((points[mminy].x+points[miny].x)/2,(points[mminy].y+points[miny].y)/2);
             Point en=Point((points[else_p[0]].x+points[else_p[1]].x)/2,(points[else_p[0]].y+points[else_p[1]].y)/2);
             led.push_back(make_pair(st,en));
-            circle(img_src,st,10,Scalar(255,20,20),3);
-            circle(img_src,en,10,Scalar(30,200,20),3);
-            for(int i=0;i<4;++i){
+            //circle(img_src,st,10,Scalar(255,20,20),3);
+            //circle(img_src,en,10,Scalar(30,200,20),3);
+            /*for(int i=0;i<4;++i){
                 if(i==3)line(img_src,points[i],points[0],Scalar(0,255,0),2,8,0);
                 else line(img_src,points[i],points[i+1],Scalar(0,255,0),2,8,0);
                 //cout<<"Point "<<i<<" "<<points[i].x<<" "<<points[i].y<<endl;
-            }
+            }*/
         }
         //cout<<"LED num: "<<led.size()<<endl;
-        cvtColor(gray_img,gray_img,CV_GRAY2BGR);
-        imshow("B",gray_img);
+        //cvtColor(gray_img,gray_img,CV_GRAY2BGR);
+        //imshow("B",gray_img);
     }
     void find_armor(){
         int flag[led.size()];
@@ -102,16 +102,16 @@ public:
                 double l1=sqrt(pow(v1.x,2)+pow(v1.y,2));
                 double l2=sqrt(pow(v2.x,2)+pow(v2.y,2));
                 double l3=sqrt(pow(v3.x,2)+pow(v3.y,2));
-                cout<<l1<<" "<<l2<<" "<<l3<<endl;
+                //cout<<l1<<" "<<l2<<" "<<l3<<endl;
                 if(max(l1,l2)/min(l1,l2)<1.5
                     &&(l3/(min(l1,l2)<5))&&(l3/(min(l1,l2)>1.25))
                     &&((v1.x*v2.x)+(v1.y*v2.y))/(l1*l2)>0.9945
                     &&((v1.x*v3.x)+(v1.y*v3.y))/(l1*l3)<0.35
                     ){
-                    //armor_points={led[i].first,led[j].first,led[j].second,led[i].second};
-                    //solvePnP(small,armor_points,cameraMatrix,distCoeffs,recv,tecv,SOLVEPNP_P3P);
-                    //cout<<tecv.at<double>(0,0)<<" "<<tecv.at<double>(0,1)<<" "<<tecv.at<double>(0,2)<<endl;
-                    circle(img_src,(led[i].first+led[j].second)/2,10,Scalar(0,0,255),3);
+                    armor_points={led[i].first,led[j].first,led[j].second,led[i].second};
+                    solvePnP(small,armor_points,cameraMatrix,distCoeffs,rvec,tvec,false,SOLVEPNP_ITERATIVE);
+                    cout<<tvec.at<double>(0,0)<<" "<<tvec.at<double>(0,1)<<" "<<tvec.at<double>(0,2)<<endl;
+                    //circle(img_src,(led[i].first+led[j].second)/2,10,Scalar(0,0,255),3);
                 }
             }
         }

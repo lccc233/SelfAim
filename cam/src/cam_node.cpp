@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     CameraGetCapability(hCamera,&tCapability);
     CameraSetFrameSpeed(hCamera,1);
     //
-    g_pRgbBuffer = (unsigned char*)malloc(1280*480*3);
+    g_pRgbBuffer = (unsigned char*)malloc(640*480*3);
     //g_pRgbBuffer = (unsigned char*)malloc(tCapability.sResolutionRange.iHeightMax*tCapability.sResolutionRange.iWidthMax*3);
     //g_readBuf = (unsigned char*)malloc(tCapability.sResolutionRange.iHeightMax*tCapability.sResolutionRange.iWidthMax*3);
     cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
@@ -112,10 +112,10 @@ int main(int argc, char **argv)
          更多的参数的设置方法，，清参考MindVision_Demo。本例程只是为了演示如何将SDK中获取的图像，转成OpenCV的图像格式,以便调用OpenCV的图像处理函数进行后续开发
     */
     CameraSetAeState(hCamera, FALSE);//手动曝光
-    CameraSetExposureTime(hCamera, 1* 1000);//ms曝光
+    CameraSetExposureTime(hCamera, 2* 1000);//ms曝光
     		tSdkImageResolution * 	pImageCustom;
     CameraCustomizeResolution(hCamera,pImageCustom);
-    SetCameraResolution(hCamera, 0, 400, 1280, 480);
+    SetCameraResolution(hCamera, 320, 400, 640, 480);
     if(tCapability.sIspCapacity.bMonoSensor){
         channel=1;
         CameraSetIspOutFormat(hCamera,CAMERA_MEDIA_TYPE_MONO8);
