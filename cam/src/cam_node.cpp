@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     CameraGetCapability(hCamera,&tCapability);
     CameraSetFrameSpeed(hCamera,1);
     //
-    g_pRgbBuffer = (unsigned char*)malloc(640*480*3);
+    g_pRgbBuffer = (unsigned char*)malloc(1280*480*3);
     //g_pRgbBuffer = (unsigned char*)malloc(tCapability.sResolutionRange.iHeightMax*tCapability.sResolutionRange.iWidthMax*3);
     //g_readBuf = (unsigned char*)malloc(tCapability.sResolutionRange.iHeightMax*tCapability.sResolutionRange.iWidthMax*3);
     cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
     CameraSetExposureTime(hCamera, 2* 1000);//ms曝光
     		tSdkImageResolution * 	pImageCustom;
     CameraCustomizeResolution(hCamera,pImageCustom);
-    SetCameraResolution(hCamera, 320, 400, 640, 480);
+    SetCameraResolution(hCamera, 0, 400, 1280, 480);
     if(tCapability.sIspCapacity.bMonoSensor){
         channel=1;
         CameraSetIspOutFormat(hCamera,CAMERA_MEDIA_TYPE_MONO8);
