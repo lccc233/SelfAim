@@ -7,6 +7,7 @@
 #include<vector>
 #include<std_msgs/Int8.h>
 #include<math.h>
+#include"aim/serial_info.h"
 using namespace std;
 using namespace cv;
 Mat img_src;
@@ -21,15 +22,18 @@ vector<Point3d> small={Point3d(-0.0675,0.03,0),Point3d(0.0675,0.03,0),Point3d(0.
 vector<Point2d> armor_points;
 Mat cameraMatrix,distCoeffs;
 Mat tvec,rvec;
-class aim{
+aim::serial_info armor_p;
+class aim_{
     ros::NodeHandle nh_;
     image_transport::ImageTransport it_;
     image_transport::Subscriber image_sub_;
     ros::Publisher fps_pub;
+    ros::Publisher info_pub;
 public:
-    aim():it_(nh_){
-        image_sub_ = it_.subscribe("/cam_img", 1,  &aim::Image_cb, this);
+    aim_():it_(nh_){
+        image_sub_ = it_.subscribe("/cam_img", 1,  &aim_::Image_cb, this);
         fps_pub=nh_.advertise<std_msgs::Int8>("/fps",1);
+        info_pub=nh_.advertise<aim::serial_info>("/result",10);
         cameraMatrix = (cv::Mat_<double>(3,3) << 858.4395, 0, 343.996, 0, 858.3275, 181.230, 0, 0, 1);
         distCoeffs=(cv::Mat_<double>(1,4)<< -0.0687,0.1047,0,0);
     }
@@ -111,6 +115,10 @@ public:
                     armor_points={led[i].first,led[j].first,led[j].second,led[i].second};
                     solvePnP(small,armor_points,cameraMatrix,distCoeffs,rvec,tvec,false,SOLVEPNP_ITERATIVE);
                     cout<<tvec.at<double>(0,0)<<" "<<tvec.at<double>(0,1)<<" "<<tvec.at<double>(0,2)<<endl;
+                    armor_p.x_p=tvec.at<double>(0,0);
+                    armor_p.y_p=tvec.at<double>(0,1);
+                    armor_p.z_p=tvec.at<double>(0,2);
+                    info_pub.publish(armor_p);
                     //circle(img_src,(led[i].first+led[j].second)/2,10,Scalar(0,0,255),3);
                 }
             }
@@ -119,7 +127,7 @@ public:
 };
 int main(int argc, char** argv){
     ros::init(argc, argv, "aim_node");
-    aim start;
+    aim_ start;
     ros::spin();
     return 0;
 }

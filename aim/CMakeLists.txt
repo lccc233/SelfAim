@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  message_generation
 )
 find_package( OpenCV 4 REQUIRED )
 
@@ -50,11 +51,12 @@ find_package( OpenCV 4 REQUIRED )
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
+ add_message_files(
+   FILES
+   serial_info.msg
 #   Message1.msg
 #   Message2.msg
-# )
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -63,18 +65,17 @@ find_package( OpenCV 4 REQUIRED )
 #   Service2.srv
 # )
 
-## Generate actions in the 'action' folder
-# add_action_files(
+## Generate actions in the 'action' folder add_action_files(
 #   FILES
 #   Action1.action
 #   Action2.action
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+   DEPENDENCIES 
+   std_msgs  # Or other packages containing msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -108,7 +109,7 @@ find_package( OpenCV 4 REQUIRED )
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES aim
-#  CATKIN_DEPENDS roscpp
+   CATKIN_DEPENDS  roscpp  std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -147,7 +148,7 @@ add_executable(${PROJECT_NAME}_node src/aim_node.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
+add_dependencies(${PROJECT_NAME}_node ${PROJECT_NAME}_generate_messages_cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
 	${catkin_LIBRARIES}
