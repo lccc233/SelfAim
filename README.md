@@ -1,4 +1,2 @@
 # SelfAim
 # Top Secret
-
-#
