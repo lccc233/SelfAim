@@ -112,7 +112,7 @@ int main(int argc, char **argv)
          更多的参数的设置方法，，清参考MindVision_Demo。本例程只是为了演示如何将SDK中获取的图像，转成OpenCV的图像格式,以便调用OpenCV的图像处理函数进行后续开发
     */
     CameraSetAeState(hCamera, FALSE);//手动曝光
-    CameraSetExposureTime(hCamera, 2* 1000);//ms曝光
+    CameraSetExposureTime(hCamera,  500);//ms曝光
     		tSdkImageResolution * 	pImageCustom;
     CameraCustomizeResolution(hCamera,pImageCustom);
     SetCameraResolution(hCamera, 0, 400, 1280, 480);
